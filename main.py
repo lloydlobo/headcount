@@ -105,8 +105,7 @@ def activate():
             contacts[i]["status"] = "Active"
 
     return Markup(
-        f"{''.join([contact_as_row(contact=contact, clazz="activate" if contact["id"] in seen else "")
-                    for contact in contacts])}")
+        f"{''.join([contact_as_row(contact=contact, clazz="activate" if contact["id"] in seen else "") for contact in contacts])}")
 
 
 @app.route("/deactivate", methods=["PUT"])
@@ -118,9 +117,10 @@ def deactivate():
         if str(c["id"]) in ids:
             seen.add(c["id"])
             contacts[i]["status"] = "Inactive"
+
     return Markup(
-        f"{''.join([contact_as_row(contact=contact, clazz="deactivate" if contact["id"] in seen else "")
-                    for contact in contacts])}")
+        f"{''.join([contact_as_row(contact=contact, clazz="deactivate" if contact["id"] in seen else "") for contact in contacts])}"
+    )
 
 
 @app.route("/search_contact", methods=["GET"])
