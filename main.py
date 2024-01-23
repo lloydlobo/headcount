@@ -62,8 +62,8 @@ def contact_as_row(contact, clazz=""):
 
 def contacts_to_html_table():
     row_contacts = "".join([contact_as_row(contact) for contact in contacts])
+    # <h2 style="--pico-font-size: 1rem; --pico-color: var(--pico-secondary);">{len(contacts)} results</h2>
     return Markup(f"""
-        <h2 style="--pico-font-size: 1rem; --pico-color: var(--pico-secondary);">{len(contacts)} results</h2>
         <figure>
             <table >
                 <thead>
@@ -76,7 +76,12 @@ def contacts_to_html_table():
                         <th></th>
                     </tr>
                 </thead>
-                <tbody id="tbody">
+                <tbody 
+                    id="tbody"
+                    hx-confirm="Are you sure?"
+                    hx-target="closest tr"
+                    hx-swap="outerHTML swap:1s"
+                >
                     {row_contacts}
                 </tbody>
             </table>
@@ -168,11 +173,13 @@ def delete_contact(contact_id):
     if index is not None:
         contacts.pop(index)
 
-    # return contacts_to_html_table()
+    # html = "".join([contact_as_row(c) for c in contacts])
+    # return Markup(f"{html}")
+    return ""
 
 
 def main():
-    app.run(debug=True)
+    app.run(debug=False)
 
 
 if __name__ == "__main__":
