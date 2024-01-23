@@ -135,6 +135,14 @@
                 </form>
             </details>
 
+            <div hx-include="#checked-contacts" hx-target="#tbody"
+                 role="group"
+            >
+                <button class="" hx-put="/activate">Activate</button>
+                <button class="outline " hx-put="/deactivate">Deactivate
+                </button>
+            </div>
+
             <form id="checked-contacts">
                 <div id="contact-list">
                     <h2>0 results</h2>
@@ -146,14 +154,6 @@
                     />
                 </div>
             </form>
-            <div hx-include="#checked-contacts" hx-target="#tbody"
-                 role="group"
-            >
-                <button class="" hx-put="/activate">Activate</button>
-                <button class="outline " hx-put="/deactivate">
-                    Deactivate
-                </button>
-            </div>
         </div>
     </section>
 </main>

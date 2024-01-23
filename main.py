@@ -13,7 +13,7 @@ contacts = []
 def get_users():
     response = requests.get("https://jsonplaceholder.typicode.com/users")
     if response.status_code == 200:
-        return (response.json())
+        return response.json()
     else:
         return ({"error": "Failed to fetch data from JSONPlaceholder"}), 500
 
@@ -42,7 +42,7 @@ def contact_as_li(contact):
 
 def contact_as_row(contact, clazz=""):
     # NOTE: `value` is a string representing the value of the checkbox. This is not displayed on the client-side,
-    # but on the server this is the value given to the data submitted with the checkbox's name.
+    # but on the server this is the value given to the data submitted with the checkboxes name.
     id_ = contact["id"]  # FIXME: this is visible!!!
     return Markup(f"""
         <tr class="{clazz}">
@@ -55,11 +55,12 @@ def contact_as_row(contact, clazz=""):
             <td>{contact['phone']}</td>
             <td>{contact['email']}</td>
             <td>{'Active' if (contact["status"] == 'Active') else 'Inactive'}</td>
+            <td><button hx-delete="/contact/{id_}">DELETE</button></td>
         </tr>
     """)
 
 
-def contacts_tohtml_table():
+def contacts_to_html_table():
     row_contacts = "".join([contact_as_row(contact) for contact in contacts])
     return Markup(f"""
         <h2 style="--pico-font-size: 1rem; --pico-color: var(--pico-secondary);">{len(contacts)} results</h2>
@@ -72,6 +73,7 @@ def contacts_tohtml_table():
                         <th>Phone</th>
                         <th>Email</th>
                         <th>Status</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody id="tbody">
@@ -91,7 +93,7 @@ def index():
 def get_contacts():
     # import time
     # time.sleep(1)
-    return contacts_tohtml_table()
+    return contacts_to_html_table()
 
 
 @app.route("/activate", methods=["PUT"])
@@ -152,7 +154,21 @@ def add_contact():
     contacts.append(new_contact)
     contacts.sort(key=lambda x: x["name"])
 
-    return contacts_tohtml_table()
+    return contacts_to_html_table()
+
+
+@app.route("/contact/<contact_id>", methods=["DELETE"])
+def delete_contact(contact_id):
+    index = None
+    for i, contact in enumerate(contacts):
+        if str(contact["id"]) == contact_id:
+            index = i
+            break
+
+    if index is not None:
+        contacts.pop(index)
+
+    # return contacts_to_html_table()
 
 
 def main():
