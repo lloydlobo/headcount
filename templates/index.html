@@ -11,75 +11,54 @@
             integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
             crossorigin="anonymous"
     ></script>
-    <!--    <link rel="stylesheet"-->
-    <!--          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"-->
-    <!--    >-->
-    <!--    <link-->
-    <!--            rel="stylesheet"-->
-    <!--            href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.colors.min.css"-->
-    <!--    />-->
-    <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.min.css"
-    />
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='css/styles.css') }}"
-    >
+    <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
+    <!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.colors.min.css"/>-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.min.css"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/Modal.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
 <header class="container" style="padding-block: 0;">
     <nav>
         <ul>
             <li>
-                <hgroup>
+                <div class="logo-wrapper">
                     <a href="/" class="contrast">
-                        <b>headcount</b>
-                        <span hx-get="/contacts" hx-target="#contact-list"
-                              hx-indicator="#loader" hx-trigger="load"
-                        >
-                            <span class="htmx-indicator" id="loader"
-                                  alt="Loading..."
-                                  aria-busy="true"
-                            ></span>
-                        </span>
+                        head<b>count</b>
+                        <span hx-get="/contacts" hx-target="#contact-list" hx-indicator="#loader" hx-trigger="load">
+                                <span class="htmx-indicator" id="loader" alt="Loading..." aria-busy="true"></span>
+                            </span>
                     </a>
-                    <kbd>beta</kbd>
-                </hgroup>
+                    <kbd style="font-size: 70%;">beta</kbd>
+                </div>
             </li>
         </ul>
         <ul>
+            <li>
+                <input style="width: 100%;" type="search" name="q" hx-get="/search_contact"
+                       hx-trigger="keyup delay:500ms changed"
+                       hx-target="#search-results" placeholder="Search..."
+                >
+            </li>
             <li><a href="#" class="secondary">About</a></li>
-            <!--            <li><a href="#">Link</a></li>-->
-            <!--            <li><a href="#" role="button">Button</a></li>-->
+            <!--            <li><a href="#">GitHub</a></li>-->
+            <!--            <li><a href="#" role="button">Pricing</a></li>-->
         </ul>
     </nav>
+    <output id="search-results"></output>
 </header>
-
-<main class="container-fluid"
-      style="--block-spacing-vertical: var(--block-spacing-horizontal);"
->
+<main class="container-fluid">
     <section class="container">
-
-        <!--  hx-trigger="load|revealed|..."  -->
-        <input type="search" name="q" hx-get="/search_contact"
-               hx-trigger="keyup delay:500ms changed"
-               hx-target="#search-results"
-               placeholder="Search..."
-        >
-        <div id="search-results"></div>
-
-        <div style="margin: 0; --block-spacing-vertical: var(--block-spacing-horizontal);">
+        <div class="grid">
             <details style="border-bottom: none;">
                 <summary role="button"
-                         style="display:flex; cursor: pointer; margin-inline-start:auto; width: fit-content;"
+                         style="display:flex; cursor: pointer; margin-inline-end: auto; width: fit-content;"
                 >
-                    <icon title="Add new">
-                        <svg
-                                xmlns="http://www.w3.org/2000/svg" width="24"
-                                height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-user-round-plus"
+                    <icon data-tooltip="Add new">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-user-round-plus"
                         >
                             <path d="M2 21a8 8 0 0 1 13.292-6"/>
                             <circle cx="10" cy="8" r="5"/>
@@ -88,85 +67,80 @@
                         </svg>
                     </icon>
                 </summary>
-
-                <form hx-post="/add_contact" hx-target="#contact-list">
+                <form style="position: absolute; z-index: 1;" hx-post="/add_contact" hx-target="#contact-list">
                     <article style="padding-block-end: 1em;">
-                        <header style="margin-block-end: 1em;"><b>Add new
-                            headcount</b></header>
-                        <fieldset class="grid">
-                            <label for="name">
-                                Name
-                                <input type="text" id="name" name="name"
-                                       required
-                                >
-                            </label>
-                            <label for="phone">
-                                Phone
-                                <input type="tel" id="phone" name="phone"
-                                       required
-                                >
-                            </label>
-                        </fieldset>
+                        <header style="margin-block-end: 1em; padding-block: 1em;"><b>Add new headcount</b></header>
+                        <label for="name">Name <input type="text" id="name" name="name" required></label>
+                        <label for="phone">Phone <input type="tel" id="phone" name="phone" required></label>
+                        <label for="email">Email <input type="email" id="email" name="email" required></label>
                         <div class="grid">
-                            <label for="email">
-                                Email
-                                <input type="email" id="email" name="email"
-                                       required
-                                >
-                            </label>
                             <fieldset>
                                 <legend>Status</legend>
-                                <label for="status">
-                                    <input type="checkbox" id="status"
-                                           name="status"
-                                    >
-                                    Active
-                                </label>
+                                <label for="status"><input type="checkbox" id="status" name="status"> Active</label>
                             </fieldset>
-                        </div>
-                        <div role="group">
-                            <button type="submit"
-                                    data-tooltip="Create new contact"
-                            >
-                                Add Contact
-                            </button>
+                            <button type="submit" data-tooltip="Add new">Submit</button>
                         </div>
                     </article>
                 </form>
             </details>
-
-            <div hx-include="#checked-contacts" hx-target="#tbody"
-                 role="group"
-            >
-                <button class="" hx-put="/activate">Activate</button>
-                <button class="outline " hx-put="/deactivate">Deactivate
-                </button>
-            </div>
-
-            <form id="checked-contacts">
-                <div id="contact-list">
-                    <h2>0 results</h2>
-                    <img src="static/assets/img/loader.gif"
-                         id="loader"
-                         alt="Loading..."
-                         class="htmx-indicator"
-                         aria-busy="true"
-                    />
+            <nav>
+                <ul role="group">
+                    <li>
+                        <kbd hx-get="/count-contacts" hx-trigger="every 2s">
+                            <span alt="Loading..." aria-busy="true"></span>
+                            total
+                        </kbd>
+                    </li>
+                    <li>
+                        <kbd hx-get="/count-active-contacts" hx-trigger="every 2s">
+                            <span alt="Loading..." aria-busy="true"></span>
+                            active
+                        </kbd>
+                    </li>
+                    <li>
+                        <kbd hx-get="/count-inactive-contacts" hx-trigger="every 2s">
+                            <span alt="Loading..." aria-busy="true"></span>
+                            inactive
+                        </kbd>
+                    </li>
+                </ul>
+            </nav>
+            <div class="grid">
+                <div></div>
+                <div hx-include="#checked-contacts" hx-target="#tbody" role="group">
+                    <button class="" hx-put="/activate" data-tooltip="Activate">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-shield-plus"
+                        >
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                            <path d="M8 11h8"/>
+                            <path d="M12 15V7"/>
+                        </svg>
+                    </button>
+                    <button class="contrast" hx-put="/deactivate" data-tooltip="Deactivate">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-shield-minus"
+                        >
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
+                            <path d="M8 11h8"/>
+                        </svg>
+                    </button>
                 </div>
-            </form>
+            </div>
         </div>
+        <div class="grid">
+        </div>
+        <form id="checked-contacts">
+            <div id="contact-list">
+                <img src="static/assets/img/loader.gif" id="loader" alt="Loading..." class="htmx-indicator"
+                     aria-busy="true"
+                />
+            </div>
+        </form>
     </section>
 </main>
 </body>
 </html>
-
-<!--Default: -->
-<!--        hx-trigger="click"-->
-<!--<button hx-get="https://jsonplaceholder.typicode.com/users" hx-trigger="mouseover" hx-swap="outerHTML" >-->
-<!--    Fetch Users-->
-<!--</button>-->
-
-<!--limit = requests.query.limit or 10-->
-<!--  f"https://jsonplaceholder.typicode.com/users?_limit=${limit}"       hx-vals='{"limit": 3}'-->
-<!--        hx-trigger="every 2s"-->
-
+<!--<button hx-get="/modal" hx-target="body" hx-swap="beforeend">Modal Demo</button>-->

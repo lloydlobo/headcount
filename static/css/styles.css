@@ -43,6 +43,10 @@
 
 html,body {
     overflow-x: hidden;
+    /*font-size: 90%;*/
+}
+body {
+    /*font-size: 110%;*/
 }
 
 .htmx-indicator{
