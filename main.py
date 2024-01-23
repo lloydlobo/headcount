@@ -104,8 +104,10 @@ def activate():
             seen.add(c["id"])
             contacts[i]["status"] = "Active"
 
-    return Markup(
-        f"{''.join([contact_as_row(contact=contact, clazz="activate" if contact["id"] in seen else "") for contact in contacts])}")
+    rows = [contact_as_row(contact=contact, clazz="activate" if contact["id"] in seen else "")
+            for contact in contacts]
+    html = ''.join(rows)
+    return Markup(f"{html}")
 
 
 @app.route("/deactivate", methods=["PUT"])
@@ -118,9 +120,10 @@ def deactivate():
             seen.add(c["id"])
             contacts[i]["status"] = "Inactive"
 
-    return Markup(
-        f"{''.join([contact_as_row(contact=contact, clazz="deactivate" if contact["id"] in seen else "") for contact in contacts])}"
-    )
+    rows = [contact_as_row(contact=contact, clazz="deactivate" if contact["id"] in seen else "")
+            for contact in contacts]
+    html = ''.join(rows)
+    return Markup(f"{html}")
 
 
 @app.route("/search_contact", methods=["GET"])
