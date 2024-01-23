@@ -5,7 +5,8 @@ import requests
 from flask import Flask, render_template, request
 from markupsafe import Markup
 
-app = Flask(__name__)
+# Flask app
+app: Flask = Flask(__name__)
 
 contacts = []
 
@@ -230,10 +231,9 @@ def get_modal():
         </div>
     """)
 
-
-def main():
-    app.run(debug=True)
-
-
-if __name__ == "__main__":
-    main()
+# def main():
+#     app.run(debug=True)
+#
+#
+# if __name__ == "__main__":
+#     main()

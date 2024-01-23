@@ -1,3 +1,3 @@
 # headcount
 
-![headcount localhost preview](static/assets/preview_headcount.png)
+![headcount localhost preview](server/static/assets/preview_headcount.png)
