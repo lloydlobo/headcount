@@ -125,6 +125,7 @@ def get_contacts():
 
 @app.route("/activate", methods=["PUT"])
 def activate():
+    """If you want to stop polling from a server response you can respond with the HTTP response code 286 and the element will cancel the polling."""
     ids = request.form.getlist("ids")
     seen = set()
 
@@ -145,6 +146,7 @@ def activate():
 
 @app.route("/deactivate", methods=["PUT"])
 def deactivate():
+    """If you want to stop polling from a server response you can respond with the HTTP response code 286 and the element will cancel the polling."""
     ids = request.form.getlist("ids")
     seen = set()
 
@@ -161,6 +163,43 @@ def deactivate():
     ]
     html = "".join(rows)
     return Markup(f"{html}")
+
+
+@app.route("/contact/email", methods=["POST"])
+def validate_email_with_partial():
+    email: str | None = request.form.get("email")
+    pattern = r"^\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b"
+
+    matches = re.match(pattern, email)
+    is_valid = bool(matches)
+
+    exists = any([con["email"] == email for con in contacts]) if is_valid else False
+    is_err = (not is_valid) or exists
+
+    msg = "Invalid email" if not is_valid else "Email already exists" if exists else ""
+
+    return Markup(
+        f"""
+        <div hx-target="this" hx-swap="outerHTML">
+            <label for="email">Email </label>
+            <input
+                name="email"
+                hx-post="/contact/email"
+                hx-indicator="#ind"
+                value={"&nbsp;" if email.isspace() else email}
+                aria-describedby="email-helper"
+                aria-invalid={"true" if is_err else "false"}
+                aria-label="email"
+                autocomplete="email"
+                id="email"
+                placeholder="Email"
+                required
+                type="email"
+            />
+            <small id="email-helper">{msg}</small>
+        </div>
+        """
+    )
 
 
 @app.route("/search_contact", methods=["GET"])
@@ -238,16 +277,66 @@ def count_inactive_contacts():
 def get_modal():
     return Markup(
         f"""
-        <div id="modal" _="on closeModal add .closing then wait for animationend then remove me">
-            <div class="modal-underlay" _="on click trigger closeModal"></div>
-            <div class="modal-content">
-                <h1>Modal Dialog</h1>
-                This is the modal content.
-                You can put anything here, like text, or a form, or an image.
-                <br>
-                <br>
-                <button _="on click trigger closeModal">Close</button>
-            </div>
+        <div
+          id="modal"
+          _="on closeModal add .closing then wait for animationend then remove me"
+        >
+          <div class="modal-underlay" _="on click trigger closeModal"></div>
+          <div class="modal-content">
+            <form
+              data-post="/add_contact"
+              hx-post="/add_contact"
+              hx-target="#contact-list"
+            >
+              <article>
+                <header><b>Add new headcount</b></header>
+                <label for="name" class="sr-only">Name </label>
+                <input type="text" id="name" name="name" placeholder="Name" required />
+                <label for="phone" class="sr-only">Phone</label>
+                <input type="tel" id="phone" name="phone" placeholder="Phone" required />
+                <div hx-target="this" hx-swap="outerHTML">
+                  <label for="email" class="sr-only">Email</label>
+                  <input
+                    name="email"
+                    hx-post="/contact/email"
+                    hx-indicator="#ind"
+                    aria-label="email"
+                    aria-describedby="email-helper"
+                    autocomplete="email"
+                    id="email"
+                    placeholder="Email"
+                    required
+                    type="email"
+                  />
+                  <img
+                    src="static/assets/img/loader.gif"
+                    id="ind"
+                    alt="Loading..."
+                    class="htmx-indicator"
+                    aria-busy="true"
+                  />
+                </div>
+                <fieldset>
+                  <legend>Status</legend>
+                  <input type="checkbox" id="status" name="status" />
+                  <label for="status">Active</label>
+                </fieldset>
+                <div class="grid">
+                  <div></div>
+                  <div></div>
+                  <button
+                    class="secondary"
+                    type="button"
+                    _="on click trigger closeModal"
+                    data-tooltip="Close form"
+                  >
+                    Close
+                  </button>
+                  <button type="submit" data-tooltip="Add new">Submit</button>
+                </div>
+              </article>
+            </form>
+          </div>
         </div>
         """
     )

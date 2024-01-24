@@ -20,6 +20,10 @@
     />
     <link
       rel="stylesheet"
+      href="{{ url_for('static', filename='css/modal.css') }}"
+    />
+    <link
+      rel="stylesheet"
       href="{{ url_for('static', filename='css/styles.css') }}"
     />
   </head>
@@ -103,58 +107,35 @@
     <main>
       <section class="container">
         <div class="grid">
-          <div></div>
-          <div></div>
-          <div></div>
-          <details class="form-add-new">
-            <summary role="button">
-              <icon data-tooltip="Add new">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-user-round-plus"
-                >
-                  <path d="M2 21a8 8 0 0 1 13.292-6" />
-                  <circle cx="10" cy="8" r="5" />
-                  <path d="M19 16v6" />
-                  <path d="M22 19h-6" />
-                </svg>
-              </icon>
-            </summary>
-            <form hx-post="/add_contact" hx-target="#contact-list">
-              <article>
-                <header><b>Add new headcount</b></header>
-                <label for="name"
-                  >Name <input type="text" id="name" name="name" required
-                /></label>
-                <label for="phone"
-                  >Phone <input type="tel" id="phone" name="phone" required
-                /></label>
-                <label for="email"
-                  >Email <input type="email" id="email" name="email" required
-                /></label>
-                <div class="grid">
-                  <fieldset>
-                    <legend>Status</legend>
-                    <label for="status"
-                      ><input type="checkbox" id="status" name="status" />
-                      Active</label
-                    >
-                  </fieldset>
-                  <button type="submit" data-tooltip="Add new">Submit</button>
-                </div>
-              </article>
-            </form>
-          </details>
+          <button
+            hx-get="/modal"
+            hx-target="body"
+            hx-swap="beforeend"
+            type="button"
+            data-tooltip="Add new"
+            aria-label="Add new"
+          >
+            <icon>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="lucide lucide-user-round-plus"
+              >
+                <path d="M2 21a8 8 0 0 1 13.292-6" />
+                <circle cx="10" cy="8" r="5" />
+                <path d="M19 16v6" />
+                <path d="M22 19h-6" />
+              </svg>
+            </icon>
+          </button>
           <div role="group">
-            <!-- <div></div> -->
             <div hx-include="#checked-contacts" hx-target="#tbody" role="group">
               <button class="" hx-put="/activate" data-tooltip="Activate">
                 <svg
