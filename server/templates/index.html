@@ -1,146 +1,215 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en" data-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
-    >
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Home ~ headcount</title>
-    <script src="https://unpkg.com/htmx.org@1.9.10"
-            integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
-            crossorigin="anonymous"
+    <script
+      src="https://unpkg.com/htmx.org@1.9.10"
+      integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC"
+      crossorigin="anonymous"
     ></script>
     <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
-    <!--    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.colors.min.css"/>-->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.min.css"/>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/Modal.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-</head>
-<body>
-<header class="container" style="padding-block: 0;">
-    <nav>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@picocss/pico@next/css/pico.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+  </head>
+  <body>
+    <header class="container">
+      <nav>
         <ul>
-            <li>
-                <div class="logo-wrapper">
-                    <a href="/" class="contrast">
-                        head<b>count</b>
-                        <span hx-get="/contacts" hx-target="#contact-list" hx-indicator="#loader" hx-trigger="load">
-                            <span class="htmx-indicator" id="loader" alt="Loading..." aria-busy="true"></span>
-                        </span>
-                    </a>
-                    <kbd style="font-size: 70%;">beta</kbd>
-                </div>
-            </li>
-        </ul>
-        <ul>
-            <li>
-                <input style="width: 100%;" type="search" name="q" hx-get="/search_contact"
-                       hx-trigger="keyup delay:500ms changed"
-                       hx-target="#search-results" placeholder="Search..."
-                >
-            </li>
-            <li><a href="#" class="secondary">About</a></li>
-            <!--            <li><a href="#">GitHub</a></li>-->
-            <!--            <li><a href="#" role="button">Pricing</a></li>-->
-        </ul>
-    </nav>
-    <output id="search-results"></output>
-</header>
-<main class="container-fluid">
-    <section class="container">
-        <div class="grid">
-            <details style="border-bottom: none;">
-                <summary role="button"
-                         style="display:flex; cursor: pointer; margin-inline-end: auto; width: fit-content;"
-                >
-                    <icon data-tooltip="Add new">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                             fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="lucide lucide-user-round-plus"
-                        >
-                            <path d="M2 21a8 8 0 0 1 13.292-6"/>
-                            <circle cx="10" cy="8" r="5"/>
-                            <path d="M19 16v6"/>
-                            <path d="M22 19h-6"/>
-                        </svg>
-                    </icon>
-                </summary>
-                <form style="position: absolute; z-index: 1;" hx-post="/add_contact" hx-target="#contact-list">
-                    <article style="padding-block-end: 1em;">
-                        <header style="margin-block-end: 1em; padding-block: 1em;"><b>Add new headcount</b></header>
-                        <label for="name">Name <input type="text" id="name" name="name" required></label>
-                        <label for="phone">Phone <input type="tel" id="phone" name="phone" required></label>
-                        <label for="email">Email <input type="email" id="email" name="email" required></label>
-                        <div class="grid">
-                            <fieldset>
-                                <legend>Status</legend>
-                                <label for="status"><input type="checkbox" id="status" name="status"> Active</label>
-                            </fieldset>
-                            <button type="submit" data-tooltip="Add new">Submit</button>
-                        </div>
-                    </article>
-                </form>
-            </details>
-            <nav>
-                <ul role="group">
-                    <li>
-                        <kbd hx-get="/count-contacts" hx-trigger="every 20s">
-                            <span alt="Loading..." aria-busy="true"></span>
-                            total
-                        </kbd>
-                    </li>
-                    <li>
-                        <kbd hx-get="/count-active-contacts" hx-trigger="every 20s">
-                            <span alt="Loading..." aria-busy="true"></span>
-                            active
-                        </kbd>
-                    </li>
-                    <li>
-                        <kbd hx-get="/count-inactive-contacts" hx-trigger="every 20s">
-                            <span alt="Loading..." aria-busy="true"></span>
-                            inactive
-                        </kbd>
-                    </li>
-                </ul>
-            </nav>
-            <div class="grid">
-                <div></div>
-                <div hx-include="#checked-contacts" hx-target="#tbody" role="group">
-                    <button class="" hx-put="/activate" data-tooltip="Activate">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="lucide lucide-shield-plus"
-                        >
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
-                            <path d="M8 11h8"/>
-                            <path d="M12 15V7"/>
-                        </svg>
-                    </button>
-                    <button class="contrast" hx-put="/deactivate" data-tooltip="Deactivate">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="lucide lucide-shield-minus"
-                        >
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/>
-                            <path d="M8 11h8"/>
-                        </svg>
-                    </button>
-                </div>
+          <li>
+            <div class="logo-wrapper">
+              <a href="/" class="contrast">
+                <!--Initial Loading  -->
+                <span class="relative">
+                  head<b>count</b>
+                  <span
+                    hx-get="/contacts"
+                    hx-target="#contact-list"
+                    hx-indicator="#loader"
+                    hx-trigger="load"
+                  >
+                    <span
+                      class="htmx-indicator indicator"
+                      id="loader"
+                      alt="Loading..."
+                      aria-busy="true"
+                    ></span>
+                  </span>
+                </span>
+              </a>
+              <kbd>beta</kbd>
             </div>
+          </li>
+        </ul>
+
+        <ul class="nav-stats">
+          <li>
+            <kbd hx-get="/count-contacts" hx-trigger="load, every 20s">
+              <span alt="Loading..." aria-busy="true"></span> total
+            </kbd>
+          </li>
+          <li>
+            <kbd hx-get="/count-active-contacts" hx-trigger="load, every 20s">
+              <span alt="Loading..." aria-busy="true"></span> active
+            </kbd>
+          </li>
+          <li>
+            <kbd hx-get="/count-inactive-contacts" hx-trigger="load, every 20s">
+              <span alt="Loading..." aria-busy="true"></span> inactive
+            </kbd>
+          </li>
+          <li><a href="#" class="secondary">About</a></li>
+          <!--            <li><a href="#">GitHub</a></li>-->
+          <!--            <li><a href="#" role="button">Pricing</a></li>-->
+        </ul>
+      </nav>
+
+      <article class="searchbox hidden">
+        <div class="relative">
+          <input
+            name="q"
+            type="search"
+            placeholder="Search..."
+            hx-get="/search_contact"
+            hx-indicator="#search-loader"
+            hx-target="#search-results"
+            hx-trigger="input changed delay:500ms, search"
+            data-tmp-hx-trigger="keyup delay:500ms changed"
+          />
+          <div class="searchbox-indicator">
+            <span
+              class="htmx-indicator"
+              id="search-loader"
+              alt="Loading..."
+              aria-busy="true"
+            ></span>
+          </div>
         </div>
+        <div id="search-results"></div>
+      </article>
+    </header>
+
+    <main>
+      <section class="container">
         <div class="grid">
+          <div></div>
+          <div></div>
+          <div></div>
+          <details class="form-add-new">
+            <summary role="button">
+              <icon data-tooltip="Add new">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-user-round-plus"
+                >
+                  <path d="M2 21a8 8 0 0 1 13.292-6" />
+                  <circle cx="10" cy="8" r="5" />
+                  <path d="M19 16v6" />
+                  <path d="M22 19h-6" />
+                </svg>
+              </icon>
+            </summary>
+            <form hx-post="/add_contact" hx-target="#contact-list">
+              <article>
+                <header><b>Add new headcount</b></header>
+                <label for="name"
+                  >Name <input type="text" id="name" name="name" required
+                /></label>
+                <label for="phone"
+                  >Phone <input type="tel" id="phone" name="phone" required
+                /></label>
+                <label for="email"
+                  >Email <input type="email" id="email" name="email" required
+                /></label>
+                <div class="grid">
+                  <fieldset>
+                    <legend>Status</legend>
+                    <label for="status"
+                      ><input type="checkbox" id="status" name="status" />
+                      Active</label
+                    >
+                  </fieldset>
+                  <button type="submit" data-tooltip="Add new">Submit</button>
+                </div>
+              </article>
+            </form>
+          </details>
+          <div role="group">
+            <!-- <div></div> -->
+            <div hx-include="#checked-contacts" hx-target="#tbody" role="group">
+              <button class="" hx-put="/activate" data-tooltip="Activate">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-shield-plus"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+                  <path d="M8 11h8" />
+                  <path d="M12 15V7" />
+                </svg>
+              </button>
+              <button
+                class="contrast"
+                hx-put="/deactivate"
+                data-tooltip="Deactivate"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="lucide lucide-shield-minus"
+                >
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
+                  <path d="M8 11h8" />
+                </svg>
+              </button>
+            </div>
+          </div>
         </div>
         <form id="checked-contacts">
-            <div id="contact-list">
-                <img src="static/assets/img/loader.gif" id="loader" alt="Loading..." class="htmx-indicator"
-                     aria-busy="true"
-                />
-            </div>
+          <div id="contact-list">
+            <img
+              src="static/assets/img/loader.gif"
+              id="loader"
+              alt="Loading..."
+              class="htmx-indicator"
+              aria-busy="true"
+            />
+          </div>
         </form>
-    </section>
-</main>
-</body>
+      </section>
+    </main>
+  </body>
 </html>
-<!--<button hx-get="/modal" hx-target="body" hx-swap="beforeend">Modal Demo</button>-->

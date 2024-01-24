@@ -5,6 +5,8 @@ import requests
 from flask import Flask, render_template, request
 from markupsafe import Markup
 
+__DEBUG = False
+
 # Flask app
 app: Flask = Flask(__name__)
 
@@ -30,7 +32,8 @@ for contact in contacts:
 
 
 def contact_as_li(contact):
-    return Markup(f""" 
+    return Markup(
+        f""" 
         <li class="grid">
             <span>{contact["name"]}</span>
             <div class="grid">
@@ -38,7 +41,8 @@ def contact_as_li(contact):
                 <span>{contact["email"]}</span>
             </div>
         </li>
-    """)
+        """
+    )
 
 
 def contact_as_row(contact, clazz=""):
@@ -46,7 +50,8 @@ def contact_as_row(contact, clazz=""):
     # but on the server this is the value given to the data submitted with the checkboxes name.
     id_ = contact["id"]  # FIXME: this is visible!!!
     delete_svg = f"""<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>"""
-    return Markup(f"""
+    return Markup(
+        f"""
         <tr class="{clazz}">
             <td scope="row">
                 <label for="ids">
@@ -68,13 +73,15 @@ def contact_as_row(contact, clazz=""):
                 </button>
             </td>
         </tr>
-    """)
+        """
+    )
 
 
 def contacts_to_html_table():
     row_contacts = "".join([contact_as_row(contact) for contact in contacts])
     # <h2 style="--pico-font-size: 1rem; --pico-color: var(--pico-secondary);">{len(contacts)} results</h2>
-    return Markup(f"""
+    return Markup(
+        f"""
         <figure>
             <table class="!striped">
                 <thead>
@@ -97,7 +104,8 @@ def contacts_to_html_table():
                 </tbody>
             </table>
         </figure>
-    """)
+        """
+    )
 
 
 @app.route("/")
@@ -107,8 +115,11 @@ def index():
 
 @app.route("/contacts")
 def get_contacts():
-    # import time
-    # time.sleep(1)
+    if __DEBUG:
+        import time
+
+        time.sleep(1)
+
     return contacts_to_html_table()
 
 
@@ -122,9 +133,13 @@ def activate():
             seen.add(c["id"])
             contacts[i]["status"] = "Active"
 
-    rows = [contact_as_row(contact=contact, clazz="activate" if contact["id"] in seen else "")
-            for contact in contacts]
-    html = ''.join(rows)
+    rows = [
+        contact_as_row(
+            contact=contact, clazz="activate" if contact["id"] in seen else ""
+        )
+        for contact in contacts
+    ]
+    html = "".join(rows)
     return Markup(f"{html}")
 
 
@@ -138,9 +153,13 @@ def deactivate():
             seen.add(c["id"])
             contacts[i]["status"] = "Inactive"
 
-    rows = [contact_as_row(contact=contact, clazz="deactivate" if contact["id"] in seen else "")
-            for contact in contacts]
-    html = ''.join(rows)
+    rows = [
+        contact_as_row(
+            contact=contact, clazz="deactivate" if contact["id"] in seen else ""
+        )
+        for contact in contacts
+    ]
+    html = "".join(rows)
     return Markup(f"{html}")
 
 
@@ -160,10 +179,10 @@ def search_contact():
 @app.route("/add_contact", methods=["POST"])
 def add_contact():
     new_contact = {
-        "id"    : uuid.uuid4(),
-        "name"  : request.form.get("name"),
-        "email" : request.form.get("email"),
-        "phone" : request.form.get("phone"),
+        "id": uuid.uuid4(),
+        "name": request.form.get("name"),
+        "email": request.form.get("email"),
+        "phone": request.form.get("phone"),
         "status": request.form.get("status", "Inactive"),
     }
 
@@ -217,7 +236,8 @@ def count_inactive_contacts():
 
 @app.route("/modal", methods=["GET"])
 def get_modal():
-    return Markup(f"""
+    return Markup(
+        f"""
         <div id="modal" _="on closeModal add .closing then wait for animationend then remove me">
             <div class="modal-underlay" _="on click trigger closeModal"></div>
             <div class="modal-content">
@@ -229,11 +249,13 @@ def get_modal():
                 <button _="on click trigger closeModal">Close</button>
             </div>
         </div>
-    """)
+        """
+    )
 
-# def main():
-#     app.run(debug=True)
-#
-#
-# if __name__ == "__main__":
-#     main()
+
+def main():
+    app.run(debug=True)
+
+
+if __name__ == "__main__":
+    main()
