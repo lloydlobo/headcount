@@ -1,0 +1,67 @@
+<div
+  id="modal"
+  _="on closeModal add .closing then wait for animationend then remove me"
+>
+  <div class="modal-underlay" _="on click trigger closeModal"></div>
+  <div class="modal-content">
+    <form
+      data-post="/add-contact"
+      hx-post="/add-contact"
+      hx-target="#contact-list"
+    >
+      <article>
+        <header><b>Add new headcount</b></header>
+        <label for="name" class="sr-only">Name </label>
+        <input type="text" id="name" name="name" placeholder="Name" required />
+        <label for="phone" class="sr-only">Phone</label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          placeholder="Phone"
+          required
+        />
+        <div hx-target="this" hx-swap="outerHTML">
+          <label for="email" class="sr-only">Email</label>
+          <input
+            name="email"
+            hx-post="/contact/email"
+            hx-indicator="#ind"
+            aria-label="email"
+            aria-describedby="email-helper"
+            autocomplete="email"
+            id="email"
+            placeholder="Email"
+            required
+            type="email"
+          />
+          <img
+            src="static/assets/img/loader.gif"
+            id="ind"
+            alt="Loading..."
+            class="htmx-indicator"
+            aria-busy="true"
+          />
+        </div>
+        <fieldset>
+          <legend>Status</legend>
+          <input type="checkbox" id="status" name="status" />
+          <label for="status">Active</label>
+        </fieldset>
+        <div class="grid">
+          <div></div>
+          <div></div>
+          <button
+            class="secondary"
+            type="button"
+            _="on click trigger closeModal"
+            data-tooltip="Close form"
+          >
+            Close
+          </button>
+          <button type="submit" data-tooltip="Add new">Submit</button>
+        </div>
+      </article>
+    </form>
+  </div>
+</div>

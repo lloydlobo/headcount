@@ -59,17 +59,17 @@
 
         <ul class="nav-stats">
           <li>
-            <kbd hx-get="/count-contacts" hx-trigger="load, every 20s">
+            <kbd hx-get="/count-contacts" hx-trigger="load, every 15s">
               <span alt="Loading..." aria-busy="true"></span> total
             </kbd>
           </li>
           <li>
-            <kbd hx-get="/count-active-contacts" hx-trigger="load, every 20s">
+            <kbd hx-get="/count-active-contacts" hx-trigger="load, every 15s">
               <span alt="Loading..." aria-busy="true"></span> active
             </kbd>
           </li>
           <li>
-            <kbd hx-get="/count-inactive-contacts" hx-trigger="load, every 20s">
+            <kbd hx-get="/count-inactive-contacts" hx-trigger="load, every 15s">
               <span alt="Loading..." aria-busy="true"></span> inactive
             </kbd>
           </li>
@@ -79,13 +79,14 @@
         </ul>
       </nav>
 
-      <article class="searchbox hidden">
+      <article data-tooltip="Coming soon..." class="searchbox hidden">
         <div class="relative">
           <input
+            inert
             name="q"
             type="search"
             placeholder="Search..."
-            hx-get="/search_contact"
+            hx-get="/search-contact"
             hx-indicator="#search-loader"
             hx-target="#search-results"
             hx-trigger="input changed delay:500ms, search"
@@ -108,7 +109,7 @@
       <section class="container">
         <div class="grid">
           <button
-            hx-get="/modal"
+            hx-get="/form-add-contact"
             hx-target="body"
             hx-swap="beforeend"
             type="button"

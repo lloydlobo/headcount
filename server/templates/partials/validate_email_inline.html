@@ -1,0 +1,20 @@
+<!-- validate_email_inline.html -->
+
+<div hx-target="this" hx-swap="outerHTML">
+  <label for="email">Email </label>
+  <input
+    name="email"
+    hx-post="/contact/email"
+    hx-indicator="#ind"
+    value="{% if email.isspace() %}&nbsp;{%else %}{{ email }}{% endif %}"
+    aria-describedby="email-helper"
+    aria-invalid="{{'true' if is_err else 'false'}}"
+    aria-label="email"
+    autocomplete="email"
+    id="email"
+    placeholder="Email"
+    required
+    type="email"
+  />
+  <small id="email-helper">{{ msg }}</small>
+</div>

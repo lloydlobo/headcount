@@ -1,0 +1,25 @@
+<!-- templates/table_contacts.html -->
+
+<!-- figure provides overflow-y scroll via PicoCSS -->
+<figure>
+  <table class="!striped">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Name</th>
+        <th scope="col">Phone</th>
+        <th scope="col">Email</th>
+        <th scope="col">Status</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody
+      id="tbody"
+      hx-confirm="Are you sure?"
+      hx-target="closest tr"
+      hx-swap="outerHTML swap:1s"
+    >
+      {{ row_tr_contacts }}
+    </tbody>
+  </table>
+</figure>
